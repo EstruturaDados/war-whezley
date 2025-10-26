@@ -15,23 +15,86 @@
 // ============================================================================
 
 // Inclusão das bibliotecas padrão necessárias para entrada/saída, alocação de memória, manipulação de strings e tempo.
-
+#include<stdio.h>
+#include<string.h>
 // --- Constantes Globais ---
 // Definem valores fixos para o número de territórios, missões e tamanho máximo de strings, facilitando a manutenção.
-
+int  maxTerritorios = 5;
 // --- Estrutura de Dados ---
 // Define a estrutura para um território, contendo seu nome, a cor do exército que o domina e o número de tropas.
+int totalTropas = 0;
+#define MAXTROPAS 10
+#define TAMANHONOME 10
 
-// --- Protótipos das Funções ---
-// Declarações antecipadas de todas as funções que serão usadas no programa, organizadas por categoria.
-// Funções de setup e gerenciamento de memória:
-// Funções de interface com o usuário:
-// Funções de lógica principal do jogo:
-// Função utilitária:
 
-// --- Função Principal (main) ---
-// Função principal que orquestra o fluxo do jogo, chamando as outras funções em ordem.
+typedef struct{
+    char nome[TAMANHONOME];
+    char corExercito[TAMANHONOME];
+    char numTropas[2];
+
+}War;
+
+War mywar[5];
+
+void limparBufferEntrada() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void adicionarTerritorio(){
+    
+        printf("Escolha uma das opcoes:\n");
+       printf("1 - Adicionar territorio\n");
+       printf("2 - listar territorios\n");
+       printf("3 - Sair\n");
+
+       int escolha;
+       scanf("%d",&escolha);
+         limparBufferEntrada();
+            switch (escolha){
+            case 1:
+            if(totalTropas == MAXTROPAS){    
+                printf("Numero maximo de territorios atingido\n");
+
+            }else{
+                printf("Digite o nome do territorio:\n");
+                fgets(mywar[totalTropas].nome,TAMANHONOME,stdin);
+
+
+                printf("Digite a cor do exercito:\n");
+                fgets(mywar[totalTropas].corExercito,TAMANHONOME,stdin);
+
+                printf("Digite o numero de tropas:\n");
+                
+                fgets(mywar[totalTropas].numTropas,TAMANHONOME,stdin);
+
+                mywar[totalTropas].nome[strcspn(mywar[totalTropas].nome, "\n")] = 0;
+                mywar[totalTropas].corExercito[strcspn(mywar[totalTropas].corExercito, "\n")] = 0;
+
+                totalTropas++;
+
+            }
+
+                
+                break;
+
+            default:
+                break;
+            }
+
+
+
+
+
+
+    
+}
+
+
 int main() {
+adicionarTerritorio();
+
+
     // 1. Configuração Inicial (Setup):
     // - Define o locale para português.
     // - Inicializa a semente para geração de números aleatórios com base no tempo atual.
