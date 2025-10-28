@@ -1,7 +1,7 @@
 // ============================================================================
 //         PROJETO WAR ESTRUTURADO - DESAFIO DE CÓDIGO
 // ============================================================================
-//        
+//
 // ============================================================================
 //
 // OBJETIVOS:
@@ -15,85 +15,110 @@
 // ============================================================================
 
 // Inclusão das bibliotecas padrão necessárias para entrada/saída, alocação de memória, manipulação de strings e tempo.
-#include<stdio.h>
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
 // --- Constantes Globais ---
 // Definem valores fixos para o número de territórios, missões e tamanho máximo de strings, facilitando a manutenção.
-int  maxTerritorios = 5;
 // --- Estrutura de Dados ---
-// Define a estrutura para um território, contendo seu nome, a cor do exército que o domina e o número de tropas.
 int totalTropas = 0;
-#define MAXTROPAS 10
+#define MAXTROPAS 2
 #define TAMANHONOME 10
 
-
-typedef struct{
+// Estrutura que representa um território no jogo, contendo nome, cor do exército e número de tropas.
+typedef struct
+{
     char nome[TAMANHONOME];
     char corExercito[TAMANHONOME];
-    char numTropas[2];
+    char numTropas[TAMANHONOME];
 
-}War;
+} War;
 
+//Declaracao de um vetor estatico de Struct War
 War mywar[5];
 
-void limparBufferEntrada() {
+//funcao para limpar o buffer de entrada
+void limparBufferEntrada()
+{
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
-
-void adicionarTerritorio(){
-    
+//Menu de opcoes para adicionar, listar e encerrar o programa
+void exibirMenu()
+{
+    int escolha;
+    do
+    {
+printf("=== Menu de Gerenciamento de Territorios ===\n");
         printf("Escolha uma das opcoes:\n");
-       printf("1 - Adicionar territorio\n");
-       printf("2 - listar territorios\n");
-       printf("3 - Sair\n");
-
-       int escolha;
-       scanf("%d",&escolha);
-         limparBufferEntrada();
-            switch (escolha){
-            case 1:
-            if(totalTropas == MAXTROPAS){    
+        printf("1 - Adicionar territorio\n");
+        printf("2 - listar territorios\n");
+        printf("3 - Sair\n");
+printf("============================================\n");
+        scanf("%d", &escolha);
+        limparBufferEntrada();
+        switch (escolha)
+        {
+        case 1:
+            if (totalTropas == MAXTROPAS)
+            {
                 printf("Numero maximo de territorios atingido\n");
-
-            }else{
-                printf("Digite o nome do territorio:\n");
-                fgets(mywar[totalTropas].nome,TAMANHONOME,stdin);
-
+            }
+            else
+            {while (totalTropas < MAXTROPAS)
+            {
+                /* code */
+            
+            
+                printf("Digite o nome do %d territorio:\n", totalTropas + 1);
+                fgets(mywar[totalTropas].nome, TAMANHONOME, stdin);
 
                 printf("Digite a cor do exercito:\n");
-                fgets(mywar[totalTropas].corExercito,TAMANHONOME,stdin);
+                fgets(mywar[totalTropas].corExercito, TAMANHONOME, stdin);
 
                 printf("Digite o numero de tropas:\n");
-                
-                fgets(mywar[totalTropas].numTropas,TAMANHONOME,stdin);
+
+                fgets(mywar[totalTropas].numTropas, TAMANHONOME, stdin);
 
                 mywar[totalTropas].nome[strcspn(mywar[totalTropas].nome, "\n")] = 0;
                 mywar[totalTropas].corExercito[strcspn(mywar[totalTropas].corExercito, "\n")] = 0;
 
                 totalTropas++;
+            }}
 
+            break;
+        case 2:
+            if (totalTropas == 0)
+            {
+                printf("Nenhum territorio cadastrado\n");
             }
-
-                
+            else
+            {
+                printf("Lista de territorios:\n");
+                for (int i = 0; i < totalTropas; i++)
+                {
+                    printf("Territorio %d:\n", i);
+                    printf("Nome: %s \n", mywar[i].nome);
+                    printf("Cor do exercito: %s\n", mywar[i].corExercito);
+                    printf("Numero de tropas: %s\n", mywar[i].numTropas);
+                    printf("-----------------------\n");
+                }
                 break;
+            case 3:
+                printf("Saindo...\n");
 
+                break;
             default:
-                break;
+
+                printf("Escolha uma opcao invalida\n");
+               
             }
-
-
-
-
-
-
-    
+        }
+    } while (escolha != 3);
 }
 
-
-int main() {
-adicionarTerritorio();
-
+int main()
+{
+    exibirMenu();
 
     // 1. Configuração Inicial (Setup):
     // - Define o locale para português.
