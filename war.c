@@ -16,6 +16,7 @@
 
 // Inclusão das bibliotecas padrão necessárias para entrada/saída, alocação de memória, manipulação de strings e tempo.
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 // --- Constantes Globais ---
 // Definem valores fixos para o número de territórios, missões e tamanho máximo de strings, facilitando a manutenção.
@@ -23,103 +24,28 @@
 int totalTropas = 0;
 #define MAXTROPAS 2
 #define TAMANHONOME 10
-
+// Declarações das funções utilizadas no programa.
+void limparBufferEntrada();
+void exibirMenu();
+void inicializarTerritorios();
+void alocarMapa();
+void exibirMapa();
+void liberarMemoria();
+int jogarDado();
 // Estrutura que representa um território no jogo, contendo nome, cor do exército e número de tropas.
 typedef struct
 {
     char nome[TAMANHONOME];
     char corExercito[TAMANHONOME];
-    char numTropas[TAMANHONOME];
+    int numTropas[TAMANHONOME];
 
 } War;
 
-//Declaracao de um vetor estatico de Struct War
-War mywar[5];
-
-//funcao para limpar o buffer de entrada
-void limparBufferEntrada()
-{
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-//Menu de opcoes para adicionar, listar e encerrar o programa
-void exibirMenu()
-{
-    int escolha;
-    do
-    {
-printf("=== Menu de Gerenciamento de Territorios ===\n");
-        printf("Escolha uma das opcoes:\n");
-        printf("1 - Adicionar territorio\n");
-        printf("2 - listar territorios\n");
-        printf("3 - Sair\n");
-printf("============================================\n");
-        scanf("%d", &escolha);
-        limparBufferEntrada();
-        switch (escolha)
-        {
-        case 1:
-            if (totalTropas == MAXTROPAS)
-            {
-                printf("Numero maximo de territorios atingido\n");
-            }
-            else
-            {while (totalTropas < MAXTROPAS)
-            {
-                /* code */
-            
-            
-                printf("Digite o nome do %d territorio:\n", totalTropas + 1);
-                fgets(mywar[totalTropas].nome, TAMANHONOME, stdin);
-
-                printf("Digite a cor do exercito:\n");
-                fgets(mywar[totalTropas].corExercito, TAMANHONOME, stdin);
-
-                printf("Digite o numero de tropas:\n");
-
-                fgets(mywar[totalTropas].numTropas, TAMANHONOME, stdin);
-
-                mywar[totalTropas].nome[strcspn(mywar[totalTropas].nome, "\n")] = 0;
-                mywar[totalTropas].corExercito[strcspn(mywar[totalTropas].corExercito, "\n")] = 0;
-
-                totalTropas++;
-            }}
-
-            break;
-        case 2:
-            if (totalTropas == 0)
-            {
-                printf("Nenhum territorio cadastrado\n");
-            }
-            else
-            {
-                printf("Lista de territorios:\n");
-                for (int i = 0; i < totalTropas; i++)
-                {
-                    printf("Territorio %d:\n", i);
-                    printf("Nome: %s \n", mywar[i].nome);
-                    printf("Cor do exercito: %s\n", mywar[i].corExercito);
-                    printf("Numero de tropas: %s\n", mywar[i].numTropas);
-                    printf("-----------------------\n");
-                }
-                break;
-            case 3:
-                printf("Saindo...\n");
-
-                break;
-            default:
-
-                printf("Escolha uma opcao invalida\n");
-               
-            }
-        }
-    } while (escolha != 3);
-}
+War *mywar;
 
 int main()
 {
-    exibirMenu();
-
+exibirMenu();
     // 1. Configuração Inicial (Setup):
     // - Define o locale para português.
     // - Inicializa a semente para geração de números aleatórios com base no tempo atual.
@@ -144,18 +70,120 @@ int main()
 
 // --- Implementação das Funções ---
 
-// alocarMapa():
-// Aloca dinamicamente a memória para o vetor de territórios usando calloc.
-// Retorna um ponteiro para a memória alocada ou NULL em caso de falha.
+// Menu de opcoes para adicionar, listar e encerrar o programa
+void exibirMenu()
+{   alocarMapa();
+    int escolha;
+    do
+    {
+        printf("=== Menu de Gerenciamento de Territorios ===\n");
+        printf("Escolha uma das opcoes:\n");
+        printf("1 - Adicionar territorio\n");
+        printf("2 - listar territorios\n");
+        printf("3 - Sair\n");
+        printf("============================================\n");
+        scanf("%d", &escolha);
+        limparBufferEntrada();
+        switch (escolha)
+        {
+        case 1:
+            inicializarTerritorios();
 
-// inicializarTerritorios():
-// Preenche os dados iniciais de cada território no mapa (nome, cor do exército, número de tropas).
-// Esta função modifica o mapa passado por referência (ponteiro).
+            break;
+        case 2:
+            exibirMapa();
+                break;
+            break;
+        case 3:
+                liberarMemoria();
+        default:
+                printf("Escolha uma opcao invalida\n");
+        }
+    }while(escolha != 3);
+}
+//Adiciona territorios ao mapa do mundo
+void inicializarTerritorios()
+{
+    if (totalTropas == MAXTROPAS)
+            {
+                printf("Numero maximo de territorios atingido\n");
+            }
+            else
+            {
+                while (totalTropas < MAXTROPAS)
+                {   
+                    
+                    printf("Digite o nome do %d territorio:\n", totalTropas + 1);
+                    fgets(mywar[totalTropas].nome, TAMANHONOME, stdin);
 
-// liberarMemoria():
-// Libera a memória previamente alocada para o mapa usando free.
+                    printf("Digite a cor do exercito:\n");
+                    fgets(mywar[totalTropas].corExercito, TAMANHONOME, stdin);
 
-// exibirMenuPrincipal():
+                    printf("Digite o numero de tropas:\n");
+                    scanf("%d",mywar[totalTropas].numTropas);
+                    limparBufferEntrada();
+                    mywar[totalTropas].nome[strcspn(mywar[totalTropas].nome, "\n")] = 0;
+                    mywar[totalTropas].corExercito[strcspn(mywar[totalTropas].corExercito, "\n")] = 0;
+
+                    totalTropas++;
+                }
+            }
+    
+}
+
+// Lista os territorios cadastrados
+void exibirMapa(){
+
+if (totalTropas == 0)
+            {
+                printf("Nenhum territorio cadastrado\n");
+            }
+            else
+            {
+                printf("Lista de territorios:\n");
+                for (int i = 0; i < totalTropas; i++)
+                {
+                    printf("Territorio %d:\n", i+1);
+                    printf("Nome: %s \n", mywar[i].nome);
+                    printf("Cor do exercito: %s\n", mywar[i].corExercito);
+                    printf("Numero de tropas: %d\n", *mywar[i].numTropas);
+                    printf("-----------------------\n");
+                }
+            }
+                
+
+
+
+
+}
+// Limpa o buffer de entrada para evitar problemas com leituras consecutivas.
+void limparBufferEntrada()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+// Aloca dinamicamente a memória para o mapa do mundo.
+void alocarMapa()
+{
+    mywar = calloc(5, sizeof(War));
+    if (mywar == NULL)
+    {
+        perror("Erro ao alocar memoria para o mapa.\n");
+    };
+}
+//Libera a memoria alocada para o mapa do mundo
+void liberarMemoria()
+{
+    free(mywar);
+    printf("Memoria liberada com sucesso!\n");
+    printf("Encerrando o programa...\n");   
+}
+// funcao para simular o lancamento de um dado de 6 faces
+int jogarDado()
+{
+    return rand() % 6 + 1;
+}   
 // Imprime na tela o menu de ações disponíveis para o jogador.
 
 // exibirMapa():
@@ -182,5 +210,3 @@ int main()
 // Implementa a lógica para cada tipo de missão (destruir um exército ou conquistar um número de territórios).
 // Retorna 1 (verdadeiro) se a missão foi cumprida, e 0 (falso) caso contrário.
 
-// limparBufferEntrada():
-// Função utilitária para limpar o buffer de entrada do teclado (stdin), evitando problemas com leituras consecutivas de scanf e getchar.
